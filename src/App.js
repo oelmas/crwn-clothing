@@ -5,7 +5,8 @@ import React, {
 } from 'react';
 import {
   Route,
-  Switch
+  Switch,
+  Redirect
 } from 'react-router-dom';
 import {
   connect
@@ -58,19 +59,26 @@ class App extends Component {
   render() {
     return (
       <div>
-          <Header/>
+          <Header />
         <Switch>
                 <Route exact path='/' component={HomePage} />
                 <Route path = '/shop' component ={ShopPage} />
-                <Route path='/signin' component={SignInAndSignOutPage} />
+                <Route exact path='/signin' render = {() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInAndSignOutPage />)} />
         </Switch>
       </div>);
   }
 }
+
+const mapStateToProps = ({
+  user
+}) => ({
+  currentUser: user.currentUser
+});
+
 
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user))
 })
 
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
